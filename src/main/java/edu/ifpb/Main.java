@@ -1,4 +1,4 @@
-package edu.ifpb.sistema_de_controle_de_tarefas;
+package edu.ifpb;
 
 public class Main {
 

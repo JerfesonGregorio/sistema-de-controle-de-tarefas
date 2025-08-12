@@ -1,0 +1,16 @@
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE tasks (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    status VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE user_tasks (
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    task_id INT NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, task_id)
+);

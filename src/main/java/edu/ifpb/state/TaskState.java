@@ -2,7 +2,7 @@ package edu.ifpb.state;
 
 public interface TaskState {
 
-    void next();
-    void prev();
+    void next(Task task);
+    void prev(Task task);
     String getStatus();
 }

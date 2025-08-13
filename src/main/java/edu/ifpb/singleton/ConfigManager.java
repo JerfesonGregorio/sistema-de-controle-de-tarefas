@@ -10,6 +10,7 @@ public class ConfigManager {
 
     private ConfigManager() throws SQLException {
         try {
+            Class.forName("org.postgresql.Driver");
             String url = System.getenv().getOrDefault(
                     "DB_URL", "jdbc:postgresql://localhost:5432/postgres"
             );
@@ -22,6 +23,8 @@ public class ConfigManager {
             connection = DriverManager.getConnection(url, user, password);
         } catch (SQLException ex) {
             throw new SQLException("Erro conectando ao banco", ex);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 

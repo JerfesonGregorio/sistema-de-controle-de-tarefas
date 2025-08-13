@@ -4,6 +4,7 @@ import edu.ifpb.observer.TaskSubject;
 
 public class Task extends TaskSubject {
 
+    private int id;
     private String name;
     private TaskState state;
 
@@ -26,8 +27,20 @@ public class Task extends TaskSubject {
         return state.getStatus();
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     void setState(TaskState state) {

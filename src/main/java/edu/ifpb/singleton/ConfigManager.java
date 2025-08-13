@@ -6,14 +6,19 @@ import java.sql.SQLException;
 
 public class ConfigManager {
     private static ConfigManager instance;
-    private Connection connection;
-
-    private String url = "jdbc:postgresql://localhost:5432/seubanco";
-    private String user = "seuusuario";
-    private String password = "suasenha";
+    private final Connection connection;
 
     private ConfigManager() throws SQLException {
         try {
+            String url = System.getenv().getOrDefault(
+                    "DB_URL", "jdbc:postgresql://localhost:5432/postgres"
+            );
+            String user = System.getenv().getOrDefault(
+                    "DB_USER", "postgres"
+            );
+            String password = System.getenv().getOrDefault(
+                    "DB_PASSWORD", "postgres"
+            );
             connection = DriverManager.getConnection(url, user, password);
         } catch (SQLException ex) {
             throw new SQLException("Erro conectando ao banco", ex);

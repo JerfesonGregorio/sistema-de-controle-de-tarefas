@@ -26,7 +26,7 @@ public class TaskRepository {
             ResultSet rs = ps.getResultSet();
             if(rs.next()) {
                 int ping = rs.getInt(1);
-                System.out.println(ping);
+                System.out.println("Banco está conectado!");
             }
         }
     }

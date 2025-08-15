@@ -43,7 +43,7 @@ public class Task extends TaskSubject {
         this.name = name;
     }
 
-    void setState(TaskState state) {
+    public void setState(TaskState state) {
         this.state = state;
     }
 }

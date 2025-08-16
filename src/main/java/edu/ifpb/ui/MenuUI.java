@@ -17,6 +17,6 @@ public class MenuUI {
             menu.show();
             input = scanner.nextLine();
             menu.handleInput(input);
-        } while (!input.equals("o"));
+        } while (!input.equals("0"));
     }
 }

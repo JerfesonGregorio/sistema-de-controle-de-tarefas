@@ -1,12 +1,14 @@
 package edu.ifpb.singleton;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.sql.*;
+import java.util.stream.Collectors;
 
 public class ConfigManager {
     private static ConfigManager instance;
-    private final Connection connection;
+    private static Connection connection = null;
 
     private ConfigManager() throws SQLException {
         try {
@@ -31,6 +33,7 @@ public class ConfigManager {
     public static ConfigManager getInstance() throws SQLException {
         if (instance == null) {
             instance = new ConfigManager();
+            inicializarBanco();
         } else if (instance.getConnection().isClosed()) {
             instance = new ConfigManager();
         }
@@ -39,5 +42,42 @@ public class ConfigManager {
 
     public Connection getConnection() {
         return connection;
+    }
+
+    private static void runSchemaScript() {
+        try {
+            InputStream inputStream = ConfigManager.class.getClassLoader().getResourceAsStream("schema.sql");
+            if (inputStream == null) {
+                System.err.println("Arquivo schema.sql não encontrado em resources!");
+                return;
+            }
+
+            String sql = new BufferedReader(new InputStreamReader(inputStream))
+                    .lines()
+                    .collect(Collectors.joining("\n"));
+
+            try (Statement stmt = connection.createStatement()) {
+                stmt.execute(sql);
+                System.out.println("Script SQL executado com sucesso.");
+            }
+
+        } catch (Exception e) {
+            System.err.println("Erro ao executar script SQL: " + e.getMessage());
+        }
+    }
+
+    private static void inicializarBanco() {
+        try {
+            DatabaseMetaData meta = connection.getMetaData();
+            ResultSet rs = meta.getTables(null, null, "users", null);
+
+            if (!rs.next()) {
+                System.out.println("Inicializando banco de dados...");
+                runSchemaScript();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -22,33 +22,33 @@ public class TaskManagementFacade {
     }
 
     // Usuário
-    public void criarUsuario(String nome) throws SQLException {
+    public void createUser(String nome) throws SQLException {
         User user = new User(nome);
         userRepo.save(user);
         System.out.println("Usuário criado: " + user.getName());
     }
 
-    public List<User> listarUsuarios() throws SQLException {
+    public List<User> listUsers() throws SQLException {
         return userRepo.findAll();
     }
 
-    public User buscarUsuarioPorNome(String nome) throws SQLException {
+    public User findUserByName(String nome) throws SQLException {
         return userRepo.findByName(nome);
     }
 
     // Tarefa
-    public void criarTarefa(String nome) throws SQLException {
+    public void createTask(String nome) throws SQLException {
         Task task = new Task(nome);
         taskRepo.save(task);
         System.out.println("Tarefa criada: " + task.getName());
     }
 
-    public List<Task> listarTarefas() throws SQLException {
+    public List<Task> listTasks() throws SQLException {
         return taskRepo.findAll();
     }
 
     // Relacionamento Usuário ↔ Tarefa
-    public boolean atribuirTarefaParaUsuario(int userId, int taskId) throws SQLException {
+    public boolean linkUserTask(int userId, int taskId) throws SQLException {
         return taskRepo.linkUserTask(userId, taskId);
     }
 

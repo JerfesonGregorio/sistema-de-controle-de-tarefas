@@ -1,17 +1,15 @@
 package edu.ifpb;
 
-import edu.ifpb.repository.TaskRepository;
-import edu.ifpb.singleton.ConfigManager;
+import edu.ifpb.facade.TaskManagementFacade;
+import edu.ifpb.ui.MainMenu;
+import edu.ifpb.ui.MenuUI;
 
 import java.sql.SQLException;
 
 public class Main {
-
     public static void main(String[] args) throws SQLException {
-
-        TaskRepository taskRepository = new TaskRepository(ConfigManager.getInstance().getConnection());
-
-        taskRepository.pingDatabase();
-
+        MainMenu mainMenu = new MainMenu();
+        MenuUI ui = new MenuUI(mainMenu);
+        ui.start();
     }
 }

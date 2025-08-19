@@ -36,7 +36,8 @@ public class TaskMenu implements Menu {
                     break;
                 case "2":
                     List<Task> tasks = facade.listTasks();
-                    tasks.forEach(t -> System.out.println("- " + t.getName()));
+                    System.out.println("########## TAREFAS DISPONÍVEIS ##########");
+                    tasks.forEach(t -> System.out.println(t.getId() + " - " + t.getName() + " | Status: " + t.getStatus()));
                     break;
                 case "0":
                     System.out.println("Voltando...");

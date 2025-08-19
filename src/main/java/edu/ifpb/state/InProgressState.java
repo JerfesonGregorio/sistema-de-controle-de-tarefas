@@ -1,6 +1,9 @@
 package edu.ifpb.state;
 
 public class InProgressState implements TaskState {
+    private static final String BLUE = "\u001B[34m";
+    private static final String RESET = "\u001B[0m";
+
     @Override
     public void next(Task task) {
         task.setState(new CompletedState());
@@ -13,6 +16,6 @@ public class InProgressState implements TaskState {
 
     @Override
     public String getStatus() {
-        return "Em andamento";
+        return BLUE + "⏳ Em andamento" + RESET;
     }
 }

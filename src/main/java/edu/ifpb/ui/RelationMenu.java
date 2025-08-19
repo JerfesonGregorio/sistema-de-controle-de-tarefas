@@ -24,24 +24,20 @@ public class RelationMenu implements Menu {
 
     @Override
     public void handleInput(String input) {
-        try {
-            switch (input) {
-                case "1":
-                    System.out.print("Digite o ID do usuário: ");
-                    int userId = Integer.parseInt(scanner.nextLine());
-                    System.out.print("Digite o ID da tarefa: ");
-                    int taskId = Integer.parseInt(scanner.nextLine());
-                    boolean ok = facade.linkUserTask(userId, taskId);
-                    System.out.println(ok ? "Tarefa atribuída com sucesso!" : "Falha ao atribuir tarefa.");
-                    break;
-                case "0":
-                    System.out.println("Voltando...");
-                    break;
-                default:
-                    System.out.println("Opção inválida!");
-            }
-        } catch (SQLException e) {
-            System.out.println("Erro: " + e.getMessage());
+        switch (input) {
+            case "1":
+                System.out.print("Digite o nome do usuário: ");
+                String userName = scanner.nextLine();
+                System.out.print("Digite o ID da tarefa: ");
+                int taskId = Integer.parseInt(scanner.nextLine());
+                boolean ok = facade.linkUserTask(userName, taskId);
+                System.out.println(ok ? "Tarefa atribuída com sucesso!" : "Falha ao atribuir tarefa.");
+                break;
+            case "0":
+                System.out.println("Voltando...");
+                break;
+            default:
+                System.out.println("Opção inválida!");
         }
     }
 }

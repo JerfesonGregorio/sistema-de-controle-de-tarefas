@@ -1,6 +1,5 @@
 package edu.ifpb;
 
-import edu.ifpb.facade.TaskManagementFacade;
 import edu.ifpb.ui.MainMenu;
 import edu.ifpb.ui.MenuUI;
 

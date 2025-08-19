@@ -1,6 +1,8 @@
 package edu.ifpb.state;
 
 public class CompletedState implements TaskState {
+    private static final String GREEN = "\u001B[32m";
+    private static final String RESET = "\u001B[0m";
 
     @Override
     public void next(Task task) {
@@ -14,6 +16,6 @@ public class CompletedState implements TaskState {
 
     @Override
     public String getStatus() {
-        return "Concluída";
+        return GREEN + "✅ Concluída" + RESET;
     }
 }

@@ -22,8 +22,9 @@ public class TaskManagementFacade {
     }
 
     // Usuário
-    public void createUser(String nome) throws SQLException {
-        User user = new User(nome);
+    public void createUser(String name) throws SQLException {
+        String formatName = name.trim().toLowerCase();
+        User user = new User(formatName);
         userRepo.save(user);
         System.out.println("Usuário criado: " + user.getName());
     }
@@ -32,8 +33,9 @@ public class TaskManagementFacade {
         return userRepo.findAll();
     }
 
-    public User findUserByName(String nome) throws SQLException {
-        return userRepo.findByName(nome);
+    public User findUserByName(String name) throws SQLException {
+        String formatName = name.trim().toLowerCase();
+        return userRepo.findByName(formatName);
     }
 
     // Tarefa
@@ -48,8 +50,14 @@ public class TaskManagementFacade {
     }
 
     // Relacionamento Usuário ↔ Tarefa
-    public boolean linkUserTask(int userId, int taskId) throws SQLException {
-        return taskRepo.linkUserTask(userId, taskId);
+    public boolean linkUserTask(String userName, int taskId) {
+        try {
+            User user = findUserByName(userName);
+            return taskRepo.linkUserTask(user.getId(), taskId);
+        } catch (SQLException e) {
+            System.err.print("Não foi possível atribuir tarefa a usuário!");
+            return false;
+        }
     }
 
     // Teste de conexão

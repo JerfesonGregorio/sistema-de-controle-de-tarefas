@@ -43,6 +43,7 @@ public class TaskRepository {
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     int taskId = rs.getInt(1);
+                    System.out.println("id --->>>" + taskId);
                     task.setId(taskId);
                 }
             }
@@ -57,6 +58,7 @@ public class TaskRepository {
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
+                int id = rs.getInt("id");
                 String name = rs.getString("name");
                 String status = rs.getString("status");
                 Task task = new Task(name);
@@ -65,6 +67,7 @@ public class TaskRepository {
                     case "Em andamento": task.setState(new InProgressState()); break;
                     case "Concluída": task.setState(new CompletedState()); break;
                 }
+                task.setId(id);
                 tasks.add(task);
             }
         }

@@ -16,6 +16,6 @@ public class CompletedState implements TaskState {
 
     @Override
     public String getStatus() {
-        return GREEN + "✅ Concluída" + RESET;
+        return "Concluída" ;
     }
 }

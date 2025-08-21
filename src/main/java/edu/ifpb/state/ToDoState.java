@@ -16,6 +16,6 @@ public class ToDoState implements TaskState {
 
     @Override
     public String getStatus() {
-        return YELLOW + "\uD83D\uDCDD Pendente" + RESET;
+        return "Pendente";
     }
 }

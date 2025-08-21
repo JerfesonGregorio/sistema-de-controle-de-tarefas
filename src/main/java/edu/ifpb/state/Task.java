@@ -27,6 +27,10 @@ public class Task extends TaskSubject {
         return state.getStatus();
     }
 
+    public TaskState getState() {
+        return state;
+    }
+
     public int getId() {
         return id;
     }

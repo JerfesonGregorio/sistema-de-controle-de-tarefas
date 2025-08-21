@@ -147,4 +147,63 @@ public class TaskRepository {
         task.setId(id);
         return task;
     }
+
+    public boolean isTaskLinkedToUser(int userId, int taskId) throws SQLException {
+        String sql = "SELECT 1 FROM user_tasks WHERE user_id = ? AND task_id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, taskId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        }
+    }
+
+
+    public boolean updateTaskStatusByUser(int userId, int taskId, String newStatus) throws SQLException {
+        if (!isTaskLinkedToUser(userId, taskId)) {
+            return false;
+        }
+
+        String sql = "UPDATE tasks SET status = ? WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, newStatus);
+            ps.setInt(2, taskId);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    public List<Task> findTasksByUser(int userId, boolean includeCompleted) throws SQLException {
+        List<Task> tasks = new ArrayList<>();
+
+        String sql = "SELECT t.id, t.name, t.status " +
+                "FROM tasks t " +
+                "JOIN user_tasks ut ON t.id = ut.task_id " +
+                "WHERE ut.user_id = ?";
+
+        if (!includeCompleted) {
+            sql += " AND t.status <> 'Concluída'";
+        }
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    tasks.add(mapRowToTask(rs));
+                }
+            }
+        }
+
+        return tasks;
+    }
+
+    public boolean unlinkUserTask(int userId, int taskId) throws SQLException {
+        String sql = "DELETE FROM user_tasks WHERE user_id = ? AND task_id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, taskId);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
 }

@@ -58,14 +58,12 @@ public class TaskManagementFacade {
     // Relacionamento Usuário ↔ Tarefa
     public boolean linkUserTask(String userName, String taskIdInput) {
         try {
-            // 🔹 validação se taskId é numérico
             if (!taskIdInput.matches("\\d+")) {
                 System.out.println("❌ O ID da tarefa deve conter apenas números!");
                 return false;
             }
             int taskId = Integer.parseInt(taskIdInput);
 
-            // 🔹 verificar se usuário existe
             User user = findUserByName(userName);
             if (user == null) {
                 System.out.println("❌ Usuário não encontrado no banco!");
@@ -121,5 +119,68 @@ public class TaskManagementFacade {
     // Teste de conexão
     public void pingDatabase() throws SQLException {
         taskRepo.pingDatabase();
+    }
+
+    public boolean updateTaskStatusByUser(String userName, int taskId, boolean next) {
+        try {
+            User user = findUserByName(userName);
+            if (user == null) {
+                System.out.println("❌ Usuário não encontrado!");
+                return false;
+            }
+
+            Task task = taskRepo.findById(taskId);
+            if (task == null) {
+                System.out.println("❌ Tarefa não encontrada!");
+                return false;
+            }
+
+            // Confere se está vinculada
+            if (!taskRepo.isTaskLinkedToUser(user.getId(), taskId)) {
+                System.out.println("❌ Essa tarefa não pertence ao usuário!");
+                return false;
+            }
+
+            // Atualiza o estado via State
+            if (next) {
+                task.getState().next(task);
+            } else {
+                task.getState().prev(task);
+            }
+
+            // Persiste no banco
+            return taskRepo.updateTaskStatusByUser(user.getId(), taskId, task.getState().getStatus());
+
+        } catch (SQLException e) {
+            System.out.println("⚠️ Erro ao atualizar status: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public List<Task> listTasksByUserExcludingCompleted(String userName) {
+        try {
+            User user = findUserByName(userName);
+            if (user == null) {
+                System.out.println("❌ Usuário não encontrado.");
+                return List.of();
+            }
+
+            List<Task> tasks = taskRepo.findTasksByUser(user.getId(), false);
+            return tasks.stream()
+                    .filter(t -> !"Concluída".equalsIgnoreCase(t.getStatus()))
+                    .toList();
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar tarefas do usuário: " + e.getMessage());
+            return List.of();
+        }
+    }
+
+    public boolean unlinkTaskFromUser(String userName, int taskId) throws SQLException {
+        User user = userRepo.findByName(userName);
+        if (user == null) {
+            System.out.println("Usuário não encontrado!");
+            return false;
+        }
+        return taskRepo.unlinkUserTask(user.getId(), taskId);
     }
 }

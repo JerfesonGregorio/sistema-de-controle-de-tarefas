@@ -16,6 +16,6 @@ public class InProgressState implements TaskState {
 
     @Override
     public String getStatus() {
-        return BLUE + "⏳ Em andamento" + RESET;
+        return "Em andamento";
     }
 }

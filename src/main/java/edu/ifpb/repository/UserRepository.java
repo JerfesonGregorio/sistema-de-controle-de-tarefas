@@ -30,11 +30,11 @@ public class UserRepository {
         }
     }
 
-    public User findByName(String name) throws SQLException {
+    public User findByName(String name) throws RuntimeException, SQLException {
+        String formatName = name.trim().toLowerCase();
         String sql = "SELECT id, name FROM users WHERE name = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-
-            ps.setString(1, name);
+            ps.setString(1, formatName);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -45,6 +45,17 @@ public class UserRepository {
         }
         return null;
     }
+
+    public boolean deleteByName(String name) throws SQLException {
+        String formatName = name.trim().toLowerCase(); // manter o mesmo padrão
+        String sql = "DELETE FROM users WHERE name = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, formatName);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        }
+    }
+
 
     public List<User> findAll() throws SQLException {
         List<User> users = new ArrayList<>();

@@ -22,6 +22,8 @@ public class UserMenu implements Menu {
         System.out.println("1. Criar usuário");
         System.out.println("2. Listar usuários");
         System.out.println("3. Buscar usuário por nome");
+        System.out.println("4. Remover usuário");
+
         System.out.println("0. Voltar");
         System.out.print("Escolha uma opção: ");
     }
@@ -44,6 +46,12 @@ public class UserMenu implements Menu {
                     String name = scanner.nextLine();
                     User user = facade.findUserByName(name);
                     System.out.println(user != null ? "Encontrado: " + user.getName() : "Usuário não encontrado.");
+                    break;
+                case "4":
+                    System.out.print("Digite o nome do usuário para remover: ");
+                    String userName = scanner.nextLine();
+                    boolean userRemoved = facade.removeUser(userName);
+                    System.out.println(userRemoved ? "✅ Usuário removido!" : "❌ Usuário não encontrado.");
                     break;
                 case "0":
                     System.out.println("Voltando...");

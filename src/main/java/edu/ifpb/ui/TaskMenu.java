@@ -1,5 +1,6 @@
 package edu.ifpb.ui;
 
+import edu.ifpb.Util;
 import edu.ifpb.facade.TaskManagementFacade;
 import edu.ifpb.state.Task;
 
@@ -11,6 +12,7 @@ public class TaskMenu implements Menu {
 
     private final TaskManagementFacade facade;
     private final Scanner scanner = new Scanner(System.in);
+    private final Util util = new Util();
 
     public TaskMenu(TaskManagementFacade facade) {
         this.facade = facade;
@@ -20,7 +22,11 @@ public class TaskMenu implements Menu {
     public void show() {
         System.out.println("\n=== ✅ MENU TAREFAS ===");
         System.out.println("1. Criar tarefa");
-        System.out.println("2. Listar tarefas");
+        System.out.println("2. Listar todas as tarefas");
+        System.out.println("3. Listar tarefas disponíveis");
+        System.out.println("4. Listar tarefas em andamento");
+        System.out.println("5. Listar tarefas concluídas");
+        System.out.println("6. Remover tarefa");
         System.out.println("0. Voltar");
         System.out.print("Escolha uma opção: ");
     }
@@ -35,9 +41,22 @@ public class TaskMenu implements Menu {
                     facade.createTask(nome);
                     break;
                 case "2":
-                    List<Task> tasks = facade.listTasks();
-                    System.out.println("########## TAREFAS DISPONÍVEIS ##########");
-                    tasks.forEach(t -> System.out.println(t.getId() + " - " + t.getName() + " | Status: " + t.getStatus()));
+                    util.listar(facade.listTasks(), "TODAS AS TAREFAS");
+                    break;
+                case "3":
+                    util.listar(facade.listAvailableTasks(), "TAREFAS DISPONÍVEIS (Pendentes)");
+                    break;
+                case "4":
+                    util.listar(facade.listInProgressTasks(), "TAREFAS EM ANDAMENTO");
+                    break;
+                case "5":
+                    util.listar(facade.listCompletedTasks(), "TAREFAS CONCLUÍDAS");
+                    break;
+                case "6":
+                    System.out.print("Digite o ID da tarefa para remover: ");
+                    int taskId = Integer.parseInt(scanner.nextLine());
+                    boolean taskRemoved = facade.removeTask(taskId);
+                    System.out.println(taskRemoved ? "✅ Tarefa removida!" : "❌ Tarefa não encontrada.");
                     break;
                 case "0":
                     System.out.println("Voltando...");

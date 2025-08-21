@@ -7,6 +7,7 @@ public class Task extends TaskSubject {
     private int id;
     private String name;
     private TaskState state;
+    private String assignedUser;
 
     public Task(String name) {
         this.name = name;
@@ -49,5 +50,24 @@ public class Task extends TaskSubject {
 
     public void setState(TaskState state) {
         this.state = state;
+    }
+
+    public String getAssignedUser() {
+        return assignedUser;
+    }
+
+    public void setAssignedUser(String assignedUser) {
+        this.assignedUser = assignedUser;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "\n📌 [Tarefa #%d]\n   Nome: %s\n   Status: %s\n   Responsável: %s\n",
+                id,
+                name,
+                state.getStatus(),
+                (assignedUser != null ? assignedUser : "— (não atribuída)")
+        );
     }
 }

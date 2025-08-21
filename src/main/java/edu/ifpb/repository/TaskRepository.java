@@ -206,4 +206,33 @@ public class TaskRepository {
         }
     }
 
+    public Task findByIdWithUser(int taskId) throws SQLException {
+        String sql = """
+        SELECT t.id, t.name, t.status, u.name AS user_name
+        FROM tasks t
+        LEFT JOIN user_tasks ut ON t.id = ut.task_id
+        LEFT JOIN users u ON ut.user_id = u.id
+        WHERE t.id = ?
+    """;
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, taskId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Task task = new Task(rs.getString("name"));
+                    task.setId(rs.getInt("id"));
+                    task.setStatus(rs.getString("status"));
+
+                    // se houver usuário
+                    String userName = rs.getString("user_name");
+                    if (userName != null) {
+                        task.setAssignedUser(userName);
+                    }
+                    return task;
+                }
+            }
+        }
+        return null;
+    }
+
 }

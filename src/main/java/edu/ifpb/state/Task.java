@@ -9,6 +9,10 @@ public class Task extends TaskSubject {
     private TaskState state;
     private String assignedUser;
 
+    public Task() {
+
+    }
+
     public Task(String name) {
         this.name = name;
         this.state = new ToDoState();

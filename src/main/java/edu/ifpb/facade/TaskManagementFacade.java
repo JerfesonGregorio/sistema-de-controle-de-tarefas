@@ -70,14 +70,13 @@ public class TaskManagementFacade {
                 return false;
             }
 
-            // 🔹 verificar se tarefa existe
             Task task = taskRepo.findById(taskId);
             if (task == null) {
                 System.out.println("❌ Tarefa não encontrada no banco!");
                 return false;
             }
 
-            // 🔹 finalmente, faz o vínculo
+            task.setAssignedUser(userName);
             return taskRepo.linkUserTask(user.getId(), taskId);
 
         } catch (SQLException e) {
@@ -182,5 +181,9 @@ public class TaskManagementFacade {
             return false;
         }
         return taskRepo.unlinkUserTask(user.getId(), taskId);
+    }
+
+    public List<Task> listAllTasksWithUsers() throws SQLException {
+        return taskRepo.findAllWithUsers();
     }
 }

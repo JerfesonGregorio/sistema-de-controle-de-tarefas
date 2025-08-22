@@ -1,8 +1,6 @@
 package edu.ifpb.repository;
 
-import edu.ifpb.state.CompletedState;
-import edu.ifpb.state.InProgressState;
-import edu.ifpb.state.Task;
+import edu.ifpb.state.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -120,7 +118,13 @@ public class TaskRepository {
 
     private List<Task> findByStatus(String status) throws SQLException {
         List<Task> tasks = new ArrayList<>();
-        String sql = "SELECT id, name, status FROM tasks WHERE status = ?";
+        String sql = """
+        SELECT t.id, t.name, t.status, u.name AS user_name
+        FROM tasks t
+        LEFT JOIN user_tasks ut ON t.id = ut.task_id
+        LEFT JOIN users u ON ut.user_id = u.id
+        WHERE t.status = ?
+        """;
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, status);
@@ -206,33 +210,41 @@ public class TaskRepository {
         }
     }
 
-    public Task findByIdWithUser(int taskId) throws SQLException {
+    public List<Task> findAllWithUsers() throws SQLException {
+        List<Task> tasks = new ArrayList<>();
         String sql = """
         SELECT t.id, t.name, t.status, u.name AS user_name
         FROM tasks t
         LEFT JOIN user_tasks ut ON t.id = ut.task_id
         LEFT JOIN users u ON ut.user_id = u.id
-        WHERE t.id = ?
-    """;
+        """;
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, taskId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    Task task = new Task(rs.getString("name"));
-                    task.setId(rs.getInt("id"));
-                    task.setStatus(rs.getString("status"));
+        try (PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Task task = new Task();
+                task.setId(rs.getInt("id"));
+                task.setName(rs.getString("name"));
+                task.setState(createStateFromDb(rs.getString("status")));
 
-                    // se houver usuário
-                    String userName = rs.getString("user_name");
-                    if (userName != null) {
-                        task.setAssignedUser(userName);
-                    }
-                    return task;
+                String assignedUser = rs.getString("user_name");
+                if (assignedUser != null) {
+                    task.setAssignedUser(assignedUser);
                 }
+
+                tasks.add(task);
             }
         }
-        return null;
+        return tasks;
+    }
+
+    private TaskState createStateFromDb(String statusDb) {
+        return switch (statusDb.toLowerCase()) {
+            case "a fazer", "to-do" -> new ToDoState();
+            case "em progresso", "in-progress" -> new InProgressState();
+            case "concluída", "done" -> new CompletedState();
+            default -> new ToDoState();
+        };
     }
 
 }

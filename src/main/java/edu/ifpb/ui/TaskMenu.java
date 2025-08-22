@@ -26,7 +26,8 @@ public class TaskMenu implements Menu {
         System.out.println("3. Listar tarefas disponíveis");
         System.out.println("4. Listar tarefas em andamento");
         System.out.println("5. Listar tarefas concluídas");
-        System.out.println("6. Remover tarefa");
+        System.out.println("6. Listar tarefas com usuários");
+        System.out.println("7. Remover tarefa");
         System.out.println("0. Voltar");
         System.out.print("Escolha uma opção: ");
     }
@@ -41,18 +42,21 @@ public class TaskMenu implements Menu {
                     facade.createTask(nome);
                     break;
                 case "2":
-                    util.listar(facade.listTasks(), "TODAS AS TAREFAS");
+                    util.list(facade.listTasks(), "TODAS AS TAREFAS");
                     break;
                 case "3":
-                    util.listar(facade.listAvailableTasks(), "TAREFAS DISPONÍVEIS (Pendentes)");
+                    util.list(facade.listAvailableTasks(), "TAREFAS DISPONÍVEIS (Pendentes)");
                     break;
                 case "4":
-                    util.listar(facade.listInProgressTasks(), "TAREFAS EM ANDAMENTO");
+                    util.list(facade.listInProgressTasks(), "TAREFAS EM ANDAMENTO");
                     break;
                 case "5":
-                    util.listar(facade.listCompletedTasks(), "TAREFAS CONCLUÍDAS");
+                    util.list(facade.listCompletedTasks(), "TAREFAS CONCLUÍDAS");
                     break;
                 case "6":
+                    util.listWithUsers(facade.listAllTasksWithUsers(), "TAREFAS COM USUÁRIOS");
+                    break;
+                case "7":
                     System.out.print("Digite o ID da tarefa para remover: ");
                     int taskId = Integer.parseInt(scanner.nextLine());
                     boolean taskRemoved = facade.removeTask(taskId);

@@ -3,6 +3,10 @@ package edu.ifpb.observer;
 import java.util.ArrayList;
 import java.util.List;
 
+// Padrão: Observer / Subject
+// Onde aplicado: Subject
+// Como implementado: mantém lista de observers e fornece métodos para adicionar, remover e notificar
+// Por que foi escolhido: encapsula a lógica de notificação, permitindo que classes derivadas foquem no conteúdo da mensagem
 public abstract class Subject {
     protected List<Observer> observers = new ArrayList<>();
 

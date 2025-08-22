@@ -7,6 +7,10 @@ import java.util.List;
 
 public class User implements Observer {
 
+    // Padrão: Observer
+    // Onde aplicado: User
+    // Como implementado: implementa a interface Observer e mantém lista de Tasks atribuídas
+    // Por que foi escolhido: permite que usuários recebam notificações automáticas quando as Tasks são atualizadas
     private int id;
     private String name;
     private List<Task> tasks = new ArrayList<>();

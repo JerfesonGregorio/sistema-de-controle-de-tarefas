@@ -1,8 +1,10 @@
 package edu.ifpb.state;
 
 public class CompletedState implements TaskState {
-    private static final String GREEN = "\u001B[32m";
-    private static final String RESET = "\u001B[0m";
+    // Padrão: State
+    // Onde aplicado: CompletedState
+    // Como implementado: representa o estado "Concluída" de uma Task, permitindo apenas transição para estado anterior
+    // Por que foi escolhido: encapsula regras do estado final e evita alterações indevidas na Task
 
     @Override
     public void next(Task task) {

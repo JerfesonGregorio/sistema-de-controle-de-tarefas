@@ -68,7 +68,7 @@ public class RelationMenu implements Menu {
 
                 System.out.println("\n########## SUAS TAREFAS ##########");
                 userTasks.forEach(t ->
-                        System.out.println("#" + t.getId() + " - " + t.getName() + " | Status: " + t.getStatus())
+                        System.out.println("# " + t.getId() + " - " + t.getName() + " | Status: " + t.getStatus())
                 );
 
                 int taskId = -1;
@@ -90,7 +90,7 @@ public class RelationMenu implements Menu {
 
                     try {
                         if(input.equals("true") || input.equals("false")) {
-                            boolean next = Boolean.parseBoolean(scanner.nextLine());
+                            boolean next = Boolean.parseBoolean(input);
                             boolean ok = facade.updateTaskStatusByUser(userName, taskId, next);
                             System.out.println(ok ? "✅ Status atualizado!" : "❌ Não foi possível atualizar.");
                             break;
@@ -115,7 +115,7 @@ public class RelationMenu implements Menu {
 
                 System.out.println("\n########## SUAS TAREFAS ##########");
                 userTasks2.forEach(t ->
-                        System.out.println("#" + t.getId() + " - " + t.getName() + " | Status: " + t.getStatus())
+                        System.out.println("# " + t.getId() + " - " + t.getName() + " | Status: " + t.getStatus())
                 );
 
                 int taskIdUnlink;

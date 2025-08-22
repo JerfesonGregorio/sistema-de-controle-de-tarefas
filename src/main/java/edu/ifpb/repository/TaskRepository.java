@@ -8,6 +8,10 @@ import java.util.List;
 
 public class TaskRepository {
 
+    // Padrão: Repository
+    // Onde aplicado: toda a classe
+    // Como implementado: encapsula todas as operações de persistência relacionadas à entidade Task.
+    // Por que foi escolhido: centraliza o acesso ao banco, isolando a camada de persistência da lógica de negócio.
     private final Connection connection;
 
     public TaskRepository(Connection connection) {
@@ -30,6 +34,10 @@ public class TaskRepository {
     }
 
     public Task findById(int id) throws SQLException {
+        // Padrão: Repository / Data Mapper
+        // Onde aplicado: findById
+        // Como implementado: busca Task por ID, mapeando o ResultSet para objeto Task.
+        // Por que foi escolhido: abstrai a conversão de dados do banco para objetos.
         String sql = "SELECT id, name, status FROM tasks WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -42,8 +50,11 @@ public class TaskRepository {
     }
 
     public void save(Task task) throws SQLException {
+        // Padrão: Repository / Data Mapper
+        // Onde aplicado: save
+        // Como implementado: insere Task no banco e atualiza o ID do objeto.
+        // Por que foi escolhido: mantém persistência consistente e centralizada.
         String sql = "INSERT INTO tasks (name, status) VALUES (?, ?)";
-
         try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, task.getName());
@@ -60,6 +71,10 @@ public class TaskRepository {
     }
 
     public boolean deleteById(int id) throws SQLException {
+        // Padrão: Repository
+        // Onde aplicado: deleteById
+        // Como implementado: deleta Task pelo ID, retornando se a operação afetou linhas.
+        // Por que foi escolhido: centraliza regra de exclusão de tarefas.
         String sql = "DELETE FROM tasks WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -69,6 +84,10 @@ public class TaskRepository {
     }
 
     public List<Task> findAll() throws SQLException {
+        // Padrão: Repository / Data Mapper
+        // Onde aplicado: findAll
+        // Como implementado: busca todas as Tasks e cria objetos Task correspondentes.
+        // Por que foi escolhido: simplifica a recuperação de múltiplos objetos do banco.
         List<Task> tasks = new ArrayList<>();
         String sql = "SELECT id, name, status FROM tasks";
 

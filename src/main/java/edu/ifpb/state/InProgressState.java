@@ -1,8 +1,10 @@
 package edu.ifpb.state;
 
 public class InProgressState implements TaskState {
-    private static final String BLUE = "\u001B[34m";
-    private static final String RESET = "\u001B[0m";
+    // Padrão: State
+    // Onde aplicado: InProgressState
+    // Como implementado: representa o estado "Em andamento" de uma Task, permitindo transição para estados anterior e próximo
+    // Por que foi escolhido: mantém regras de transição encapsuladas, separadas da classe Task
 
     @Override
     public void next(Task task) {

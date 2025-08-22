@@ -7,12 +7,20 @@ import java.sql.*;
 import java.util.stream.Collectors;
 
 public class ConfigManager {
+    // 🔵 Padrão Singleton aplicado
+    // Mantém apenas uma instância da classe em toda a aplicação
     private static ConfigManager instance;
+
+    // A conexão com o banco de dados também é única
     private static Connection connection = null;
 
+    // 🔒 Construtor privado -> impede que outras classes criem instâncias diretamente
     private ConfigManager() throws SQLException {
         try {
+            // Carregamento do driver JDBC do PostgreSQL
             Class.forName("org.postgresql.Driver");
+
+            // Configurações vindas de variáveis de ambiente
             String url = System.getenv().getOrDefault(
                     "DB_URL", "jdbc:postgresql://localhost:5432/postgres"
             );
@@ -22,7 +30,10 @@ public class ConfigManager {
             String password = System.getenv().getOrDefault(
                     "DB_PASSWORD", "postgres"
             );
+
+            // Criação da conexão única com o banco
             connection = DriverManager.getConnection(url, user, password);
+
         } catch (SQLException ex) {
             throw new SQLException("Erro conectando ao banco", ex);
         } catch (ClassNotFoundException e) {
@@ -30,20 +41,31 @@ public class ConfigManager {
         }
     }
 
+    /**
+     * 🔵 Método Singleton: garante que só exista uma instância do ConfigManager
+     * - Se não existir, cria.
+     * - Se existir mas a conexão estiver fechada, recria.
+     * - Caso contrário, retorna a mesma instância.
+     */
     public static ConfigManager getInstance() throws SQLException {
         if (instance == null) {
             instance = new ConfigManager();
-            inicializarBanco();
+            inicializarBanco(); // Garante que o banco seja inicializado (infraestrutura pronta)
         } else if (instance.getConnection().isClosed()) {
             instance = new ConfigManager();
         }
         return instance;
     }
 
+    // Retorna a conexão única
     public Connection getConnection() {
         return connection;
     }
 
+    /**
+     * Executa o script SQL de criação das tabelas a partir do arquivo schema.sql
+     * 🎯 Motivação: Automatiza a inicialização do banco na primeira execução
+     */
     private static void runSchemaScript() {
         try {
             InputStream inputStream = ConfigManager.class.getClassLoader().getResourceAsStream("schema.sql");
@@ -66,6 +88,11 @@ public class ConfigManager {
         }
     }
 
+    /**
+     * Verifica se o banco já possui as tabelas essenciais.
+     * Caso contrário, roda o script de inicialização.
+     * 🎯 Motivação: Garante que a aplicação sempre tenha a estrutura mínima
+     */
     private static void inicializarBanco() {
         try {
             DatabaseMetaData meta = connection.getMetaData();

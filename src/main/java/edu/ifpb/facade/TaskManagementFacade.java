@@ -11,17 +11,27 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class TaskManagementFacade {
-
+    // Padrão: Facade
+    // Onde aplicado: toda a classe
+    // Como implementado: fornece uma interface simplificada para interagir com usuários, tarefas e relacionamentos.
+    // Por que foi escolhido: abstrai a complexidade da camada de repositório, oferecendo métodos de alto nível para a aplicação.
     private final UserRepository userRepo;
     private final TaskRepository taskRepo;
 
     public TaskManagementFacade() throws SQLException {
+        // Padrão: Singleton + Repository
+        // Onde aplicado: ConfigManager.getInstance()
+        // Como implementado: obtém conexão única do banco de dados.
+        // Por que foi escolhido: garante que todos os repositórios compartilhem a mesma conexão.
         Connection conn = ConfigManager.getInstance().getConnection();
         this.userRepo = new UserRepository(conn);
         this.taskRepo = new TaskRepository(conn);
     }
 
-    // Usuário
+    // Padrão: Facade + Repository
+    // Onde aplicado: createUser, listUsers, findUserByName
+    // Como implementado: delega operações do usuário aos métodos de UserRepository.
+    // Por que foi escolhido: simplifica a criação e busca de usuários, escondendo detalhes de persistência.
     public void createUser(String name) throws SQLException {
         String formatName = name.trim().toLowerCase();
         User user = new User(formatName);
@@ -44,7 +54,10 @@ public class TaskManagementFacade {
         }
     }
 
-    // Tarefa
+    // Padrão: Facade + Repository
+    // Onde aplicado: createTask, listTasks, listAvailableTasks, listInProgressTasks, listCompletedTasks
+    // Como implementado: delega operações do TaskRepository, incluindo filtros de status.
+    // Por que foi escolhido: oferece interface limpa para manipular tarefas sem expor repositório.
     public void createTask(String nome) throws SQLException {
         Task task = new Task(nome);
         taskRepo.save(task);
@@ -76,6 +89,7 @@ public class TaskManagementFacade {
                 return false;
             }
 
+            user.assignTask(task);
             task.setAssignedUser(userName);
             return taskRepo.linkUserTask(user.getId(), taskId);
 
@@ -120,6 +134,10 @@ public class TaskManagementFacade {
         taskRepo.pingDatabase();
     }
 
+    // Padrão: Facade + State
+    // Onde aplicado: updateTaskStatusByUser
+    // Como implementado: delega atualização de status para o objeto Task usando padrão State.
+    // Por que foi escolhido: separa lógica de transição de estados do banco, centralizando fluxo no objeto Task.
     public boolean updateTaskStatusByUser(String userName, int taskId, boolean next) {
         try {
             User user = findUserByName(userName);
@@ -142,9 +160,9 @@ public class TaskManagementFacade {
 
             // Atualiza o estado via State
             if (next) {
-                task.getState().next(task);
+                task.nextState();
             } else {
-                task.getState().prev(task);
+                task.previousState();
             }
 
             // Persiste no banco
